@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>SEO記事の量産スキーム（概要）</title>
+<style>
+  :root {
+    --bg: #f6f6f4; --paper: #fff; --ink: #1f1f1f; --soft: #5d5d5d; --line: #e2e2de;
+    --blue: #0563ae; --blue-t: #e3edf8; --orange: #f26923; --orange-t: #fde6d8;
+    --green: #2e8a57; --green-t: #e1f2e8; --gray-t: #efefec;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif; line-height: 1.6; font-size: clamp(14px, 1.15vw, 18px); }
+  .deck { height: 100%; overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+  .slide { min-height: 100%; height: 100dvh; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; padding-block: 24px 56px; padding-inline: 16px; }
+  .in { width: min(1280px, 100%); padding-inline: 40px; }
+  @media (max-width: 760px) {
+    .deck { scroll-snap-type: none; }
+    .slide { height: auto; min-height: 100dvh; }
+    .in { padding-inline: 4px; }
+  }
+  .kicker { font-size: .72em; letter-spacing: .14em; color: var(--soft); font-weight: 700; }
+  h1 { margin: 8px 0 12px; font-size: clamp(28px, 3.2vw, 44px); line-height: 1.3; text-wrap: balance; }
+  h2 { display: flex; align-items: center; gap: 12px; margin: 0 0 16px; font-size: clamp(21px, 2.2vw, 30px); line-height: 1.35; text-wrap: balance; }
+  h2 .n { display: inline-grid; place-items: center; width: 1.5em; height: 1.5em; border-radius: 50%; background: var(--blue); color: #fff; font-size: .6em; flex: none; }
+  h3 { margin: 0 0 6px; font-size: 1.02em; }
+  p { margin: 0 0 8px; }
+  .lead { color: var(--soft); font-size: 1.05em; }
+  .muted { color: var(--soft); font-size: .86em; }
+  .card { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; min-width: 0; }
+  .grid { display: grid; gap: 14px; }
+  .g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  @media (max-width: 760px) { .g2, .g3, .g4 { grid-template-columns: 1fr; } }
+  .tag { display: inline-block; padding: 1px 10px; border-radius: 999px; font-size: .74em; font-weight: 700; }
+  .t-blue { background: var(--blue-t); color: var(--blue); }
+  .t-orange { background: var(--orange-t); color: #b4470e; }
+  .t-green { background: var(--green-t); color: var(--green); }
+  .callout { margin-top: 14px; padding: 14px 18px; border-radius: 10px; background: var(--blue-t); font-weight: 500; }
+  .big-num { font-size: 1.9em; font-weight: 800; line-height: 1.1; color: var(--green); font-variant-numeric: tabular-nums; }
+  ul { margin: 6px 0 0; padding-left: 1.2em; } li { margin: 3px 0; }
+  table { width: 100%; border-collapse: collapse; background: var(--paper); font-size: .92em; }
+  th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  th { background: var(--gray-t); font-size: .92em; }
+  tr:last-child td { border-bottom: 0; }
+  .tw { overflow-x: auto; border-radius: 12px; border: 1px solid var(--line); }
+  .tw table { min-width: 620px; }
+  td.ai { color: var(--green); font-weight: 700; }
+  td.hm { color: var(--blue); font-weight: 700; }
+  .flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; counter-reset: s; }
+  @media (max-width: 760px) { .flow { grid-template-columns: 1fr; } }
+  .flow .card { position: relative; padding-top: 34px; }
+  .flow .card::before { counter-increment: s; content: counter(s); position: absolute; top: 10px; left: 14px; display: inline-grid; place-items: center; width: 1.5em; height: 1.5em; border-radius: 50%; background: var(--green); color: #fff; font-size: .78em; font-weight: 700; }
+  .flow .card.human::before { background: var(--blue); }
+  .flow .card .tag { position: absolute; top: 10px; right: 12px; }
+  .shot { display:block; width:100%; height:auto; border:1px solid var(--line); border-radius:10px; background:#fff; box-shadow:0 6px 24px rgba(0,0,0,.06); }
+  .shot.crop { aspect-ratio: 16/10; object-fit: cover; object-position: top; }
+  .thumbs { display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:8px; }
+  @media (max-width: 760px) { .thumbs { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+  .thumbs img { width:100%; aspect-ratio: 1200/630; object-fit:cover; border-radius:6px; border:1px solid var(--line); display:block; }
+  .cap { font-size:.78em; color:var(--soft); margin-top:6px; }
+  .split { display:grid; grid-template-columns: 1.1fr 1fr; gap:22px; align-items:center; }
+  @media (max-width: 760px) { .split { grid-template-columns: 1fr; } }
+  svg.dg { display:block; width:100%; height:auto; font-family: inherit; }
+  .foot { position: fixed; right: 16px; bottom: 12px; font-size: 12px; color: var(--soft); }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- 1 表紙 -->
+  <section class="slide"><div class="in">
+    <div class="kicker">株式会社HSE ／ 2026年10月</div>
+    <h1>SEO記事の量産スキームについて（概要）</h1>
+    <p class="lead">弊社サイト（h-s-e.jp）で運用している、SEO記事を継続的に制作・公開する仕組みの概要と、必要な工数をまとめた資料です。</p>
+  </div></section>
+
+  <!-- 2 概要 -->
+  <section class="slide"><div class="in">
+    <h2><span class="n">1</span>スキームの概要</h2>
+    <div class="grid g3">
+      <div class="card"><h3>担当者</h3><div class="big-num">1名</div><p class="muted">テーマの指示と最終チェックのみ</p></div>
+      <div class="card"><h3>更新頻度</h3><div class="big-num">毎日 2〜3本</div><p class="muted">決まった時刻に自動で制作・公開（頻度は任意に設定可能）</p></div>
+      <div class="card"><h3>AIが行う作業</h3><div class="big-num">ほぼ全工程</div><p class="muted">キーワード選定・執筆・図解とサムネイル作成・公開・公開後の確認</p></div>
+    </div>
+    <svg class="dg" viewBox="0 0 1200 250" role="img" aria-label="担当者が指示し、AIが記事制作から公開までを繰り返し、担当者が確認する流れ" style="margin-top:18px">
+      <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#7a7a76"/></marker></defs>
+      <rect x="0" y="70" width="170" height="110" rx="14" fill="#e3edf8" stroke="#0563ae"/>
+      <circle cx="85" cy="105" r="16" fill="#0563ae"/><path d="M57 160c4-20 16-28 28-28s24 8 28 28" fill="#0563ae"/>
+      <text x="85" y="200" text-anchor="middle" font-size="18" font-weight="700" fill="#0563ae">担当者 1名</text>
+      <path d="M175 110H245" stroke="#7a7a76" stroke-width="2.5" marker-end="url(#ar)"/>
+      <text x="210" y="98" text-anchor="middle" font-size="15" fill="#5d5d5d">指示</text>
+      <rect x="252" y="20" width="700" height="210" rx="16" fill="#e1f2e8" stroke="#2e8a57"/>
+      <text x="272" y="50" font-size="16" font-weight="700" fill="#2e8a57">AI（決まった時刻に自動で実行）</text>
+      <g font-size="16" font-weight="700" fill="#1f1f1f" text-anchor="middle">
+        <rect x="272" y="72" width="140" height="56" rx="10" fill="#fff" stroke="#2e8a57"/><text x="342" y="106">キーワード選定</text>
+        <rect x="447" y="72" width="140" height="56" rx="10" fill="#fff" stroke="#2e8a57"/><text x="517" y="106">構成・執筆</text>
+        <rect x="622" y="72" width="140" height="56" rx="10" fill="#fff" stroke="#2e8a57"/><text x="692" y="106">図解・サムネ</text>
+        <rect x="797" y="72" width="140" height="56" rx="10" fill="#fff" stroke="#2e8a57"/><text x="867" y="106">表示の確認</text>
+        <rect x="622" y="156" width="140" height="56" rx="10" fill="#fff" stroke="#2e8a57"/><text x="692" y="190">作業の記録</text>
+        <rect x="797" y="156" width="140" height="56" rx="10" fill="#fff" stroke="#2e8a57"/><text x="867" y="190">公開</text>
+      </g>
+      <g stroke="#7a7a76" stroke-width="2.2" fill="none" marker-end="url(#ar)">
+        <path d="M414 100H443"/><path d="M589 100H618"/><path d="M764 100H793"/><path d="M867 130V152"/><path d="M795 184H766"/>
+        <path d="M620 184H342V132"/>
+      </g>
+      <text x="480" y="208" text-anchor="middle" font-size="13" fill="#5d5d5d">記録を読んで次の記事へ</text>
+      <path d="M955 184H1025" stroke="#7a7a76" stroke-width="2.5" marker-end="url(#ar)"/>
+      <rect x="1030" y="140" width="170" height="90" rx="14" fill="#fff" stroke="#1f1f1f"/>
+      <text x="1115" y="182" text-anchor="middle" font-size="18" font-weight="700" fill="#1f1f1f">サイトに公開</text>
+      <text x="1115" y="208" text-anchor="middle" font-size="14" fill="#5d5d5d">毎日 2〜3本</text>
+      <path d="M1115 136V20H85V64" stroke="#0563ae" stroke-width="2" stroke-dasharray="6 6" fill="none" marker-end="url(#ar)"/>
+      <text x="1100" y="12" text-anchor="end" font-size="14" fill="#0563ae">担当者が最終チェック</text>
+    </svg>
+  </div></section>
+
+  <!-- 3 役割分担 -->
+  <section class="slide"><div class="in">
+    <h2><span class="n">2</span>担当者とAIの役割分担</h2>
+    <div class="tw"><table>
+      <thead><tr><th style="width:26%">工程</th><th style="width:14%">担当</th><th>内容</th></tr></thead>
+      <tbody>
+        <tr><td>狙うテーマ・優先順位の決定</td><td class="hm">担当者</td><td>どの分野の記事を優先するかを指示する</td></tr>
+        <tr><td>キーワード選定</td><td class="ai">AI</td><td>検索語の調査と、記事ごとに狙う語の設計表を作成する</td></tr>
+        <tr><td>構成・執筆</td><td class="ai">AI</td><td>設計表と公開済み記事を踏まえて、重複しない構成で執筆する</td></tr>
+        <tr><td>図解・サムネイル作成</td><td class="ai">AI</td><td>1記事につき図解2枚とサムネイル1枚を、決まった型で作成する</td></tr>
+        <tr><td>表示確認・公開</td><td class="ai">AI</td><td>スマートフォン幅で表示崩れがないか確認し、サイトに公開する</td></tr>
+        <tr><td>公開後の確認・記録</td><td class="ai">AI</td><td>ページの表示・一覧やサイトマップへの掲載を確認し、作業記録を残す</td></tr>
+        <tr><td>最終チェック・検索エンジンへの登録申請</td><td class="hm">担当者</td><td>公開された記事を確認し、検索結果の数値を見て次の方針を決める</td></tr>
+      </tbody>
+    </table></div>
+  </div></section>
+
+  <!-- 4 流れ -->
+  <section class="slide"><div class="in">
+    <h2><span class="n">3</span>1本の記事ができるまでの流れ</h2>
+    <div class="flow">
+      <div class="card human"><span class="tag t-blue">担当者</span><h3>テーマの指示</h3><p class="muted">分野と優先順位を伝える（都度ではなく方針として）</p></div>
+      <div class="card"><span class="tag t-green">AI</span><h3>キーワードと構成</h3><p class="muted">設計表から未着手の語を選び、既存記事と重複しない構成を作る</p></div>
+      <div class="card"><span class="tag t-green">AI</span><h3>執筆</h3><p class="muted">4,000字以上を目安に執筆。関連する既存記事へのリンクも入れる</p></div>
+      <div class="card"><span class="tag t-green">AI</span><h3>図解・サムネイル</h3><p class="muted">文字だけの記事にしないよう、図解2枚とサムネイルを作成</p></div>
+      <div class="card"><span class="tag t-green">AI</span><h3>表示の確認</h3><p class="muted">スマートフォン幅で表のはみ出しや崩れがないか確認</p></div>
+      <div class="card"><span class="tag t-green">AI</span><h3>公開</h3><p class="muted">サイトに公開。時間内に完成しなかった記事は公開しない</p></div>
+      <div class="card"><span class="tag t-green">AI</span><h3>公開後の確認・記録</h3><p class="muted">表示・画像・一覧掲載を確認し、つまずいた点を記録して次回に反映</p></div>
+      <div class="card human"><span class="tag t-blue">担当者</span><h3>最終チェック</h3><p class="muted">公開記事の確認と検索エンジンへの登録申請</p></div>
+    </div>
+  </div></section>
+
+  <!-- 5 工数比較 -->
+  <section class="slide"><div class="in">
+    <h2><span class="n">4</span>一般的な制作体制との工数の比較</h2>
+    <svg class="dg" viewBox="0 0 1200 215" role="img" aria-label="一般的な体制は5つの役割の間でやり取りが発生し、このスキームは担当者1名とAI" style="margin-bottom:14px">
+      <defs><marker id="a2" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#b4470e"/></marker></defs>
+      <rect x="0" y="10" width="560" height="195" rx="14" fill="#fff" stroke="#e2e2de"/>
+      <text x="20" y="36" font-size="15" font-weight="700" fill="#5d5d5d">一般的な制作体制</text>
+      <g transform="translate(0,20)"><circle cx="60" cy="70" r="14" fill="#7a7a76"/><path d="M36 114c3-18 13-25 24-25s21 7 24 25" fill="#7a7a76"/><text x="60" y="138" text-anchor="middle" font-size="15" font-weight="700" fill="#1f1f1f">SEO担当</text><circle cx="165" cy="70" r="14" fill="#7a7a76"/><path d="M141 114c3-18 13-25 24-25s21 7 24 25" fill="#7a7a76"/><text x="165" y="138" text-anchor="middle" font-size="15" font-weight="700" fill="#1f1f1f">ライター</text><circle cx="270" cy="70" r="14" fill="#7a7a76"/><path d="M246 114c3-18 13-25 24-25s21 7 24 25" fill="#7a7a76"/><text x="270" y="138" text-anchor="middle" font-size="15" font-weight="700" fill="#1f1f1f">編集者</text><circle cx="375" cy="70" r="14" fill="#7a7a76"/><path d="M351 114c3-18 13-25 24-25s21 7 24 25" fill="#7a7a76"/><text x="375" y="138" text-anchor="middle" font-size="15" font-weight="700" fill="#1f1f1f">デザイナー</text><circle cx="480" cy="70" r="14" fill="#7a7a76"/><path d="M456 114c3-18 13-25 24-25s21 7 24 25" fill="#7a7a76"/><text x="480" y="138" text-anchor="middle" font-size="15" font-weight="700" fill="#1f1f1f">担当者</text><path d="M95 95H130" stroke="#b4470e" stroke-width="2" marker-start="url(#a2)" marker-end="url(#a2)"/><path d="M200 95H235" stroke="#b4470e" stroke-width="2" marker-start="url(#a2)" marker-end="url(#a2)"/><path d="M305 95H340" stroke="#b4470e" stroke-width="2" marker-start="url(#a2)" marker-end="url(#a2)"/><path d="M410 95H445" stroke="#b4470e" stroke-width="2" marker-start="url(#a2)" marker-end="url(#a2)"/></g>
+      <text x="280" y="192" text-anchor="middle" font-size="14" fill="#b4470e">依頼・修正・確認のやり取りが役割の数だけ発生</text>
+      <path d="M585 95H625" stroke="#7a7a76" stroke-width="3"/><path d="M620 85L640 95L620 105z" fill="#7a7a76"/>
+      <rect x="660" y="10" width="540" height="195" rx="14" fill="#fff" stroke="#2e8a57"/>
+      <text x="680" y="36" font-size="15" font-weight="700" fill="#2e8a57">このスキーム</text>
+      <g transform="translate(0,20)"><circle cx="780" cy="70" r="14" fill="#0563ae"/><path d="M756 114c3-18 13-25 24-25s21 7 24 25" fill="#0563ae"/><text x="780" y="138" text-anchor="middle" font-size="15" font-weight="700" fill="#1f1f1f">担当者 1名</text></g>
+      <text x="880" y="105" text-anchor="middle" font-size="14" fill="#5d5d5d">指示・確認</text>
+      <path d="M835 115H925" stroke="#7a7a76" stroke-width="2"/><path d="M920 108L934 115L920 122z" fill="#7a7a76"/>
+      <rect x="945" y="62" width="230" height="96" rx="12" fill="#e1f2e8" stroke="#2e8a57"/>
+      <text x="1060" y="98" text-anchor="middle" font-size="17" font-weight="700" fill="#2e8a57">AI</text>
+      <text x="1060" y="126" text-anchor="middle" font-size="13" fill="#1f1f1f">選定・執筆・画像・公開</text>
+      <text x="1060" y="146" text-anchor="middle" font-size="13" fill="#1f1f1f">を1つの流れで実行</text>
+    </svg>
+    <div class="tw"><table>
+      <thead><tr><th style="width:22%">工程</th><th style="width:39%">一般的な制作体制（外注・社内制作）</th><th>このスキーム</th></tr></thead>
+      <tbody>
+        <tr><td>キーワード選定</td><td>SEO担当者が調査・選定</td><td class="ai">AI</td></tr>
+        <tr><td>構成・執筆</td><td>ライターが執筆し、編集者が確認・修正</td><td class="ai">AI</td></tr>
+        <tr><td>図解・サムネイル</td><td>デザイナーが制作</td><td class="ai">AI</td></tr>
+        <tr><td>入稿・公開</td><td>担当者がCMSに入稿し、表示を確認</td><td class="ai">AI</td></tr>
+        <tr><td>進行管理</td><td>複数の担当者間で、依頼・修正・確認のやり取りが発生</td><td class="ai">不要（1つの流れで完結）</td></tr>
+        <tr><td>指示・最終チェック</td><td>担当者</td><td class="hm">担当者1名</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout">関わる人数が「SEO担当・ライター・編集者・デザイナー・担当者」から「担当者1名」になり、記事を増やしても人の作業はほとんど増えません。</div>
+  </div></section>
+
+  <!-- 5.5 記事の例 -->
+  <section class="slide"><div class="in">
+    <h2><span class="n">5</span>AIが制作した記事の例</h2>
+    <div class="split">
+      <div>
+        <img class="shot crop" src="img/cap-article.png" alt="公開中の記事ページ" loading="lazy">
+        <p class="cap">公開中の記事（「AIでサイトを作るときの注意点」）。本文・図解・サムネイルまでAIが制作</p>
+      </div>
+      <div>
+        <h3>サムネイル（記事ごとに作成）</h3>
+        <div class="thumbs"><img src="img/thumb-ai-website-cautions.webp" alt="" loading="lazy"><img src="img/thumb-sme-ai-adoption-start.webp" alt="" loading="lazy"><img src="img/thumb-ai-task-boundary.webp" alt="" loading="lazy"><img src="img/thumb-outsource-design-vs-inhouse.webp" alt="" loading="lazy"><img src="img/thumb-video-editing-outsource-tips.webp" alt="" loading="lazy"><img src="img/thumb-manufacturing-web-design.webp" alt="" loading="lazy"><img src="img/thumb-flat-rate-design-service.webp" alt="" loading="lazy"><img src="img/thumb-reels-vs-tiktok-btob.webp" alt="" loading="lazy"></div>
+        <h3 style="margin-top:14px">本文中の図解（1記事2枚）</h3>
+        <div class="grid g2" style="gap:8px">
+          <img class="shot" src="img/zu-1.webp" alt="図解の例1" loading="lazy">
+          <img class="shot" src="img/zu-2.webp" alt="図解の例2" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- 6 品質 -->
+  <section class="slide"><div class="in">
+    <h2><span class="n">6</span>品質を保つための仕組み</h2>
+    <div class="grid g2">
+      <div class="card"><h3>ルール文書</h3><p class="muted">文字数の目安、煽り表現の禁止（「〜選」「プロが解説」など）、根拠のない金額を書かない、記事末尾の構成などを文書で固定し、毎回それに沿って制作します。</p></div>
+      <div class="card"><h3>重複の防止</h3><p class="muted">執筆前に公開済み記事の見出しを確認し、1ページで1つのキーワードを狙うようにして、記事同士が検索で競合しないようにしています。</p></div>
+      <div class="card"><h3>表示の確認</h3><p class="muted">スマートフォン幅で実際に表示し、表のはみ出しや図解の崩れを確認してから公開します。公開後もページと画像が正しく表示されるかを確認します。</p></div>
+      <div class="card"><h3>作業記録の蓄積</h3><p class="muted">記事ごとに、狙った語・構成・リンク先・つまずいた点を記録します。次の記事はこの記録を読んでから作るため、回数を重ねるほど品質が安定します。</p></div>
+    </div>
+  </div></section>
+
+  <!-- 7 実績 -->
+  <section class="slide"><div class="in">
+    <h2><span class="n">7</span>弊社サイトでの運用状況</h2>
+    <div class="grid g4">
+      <div class="card"><h3>運用開始</h3><div class="big-num">2026年9月</div><p class="muted">サイトリニューアル直後から開始</p></div>
+      <div class="card"><h3>公開記事数</h3><div class="big-num">25本</div><p class="muted">開始から約3週間</p></div>
+      <div class="card"><h3>1本あたり</h3><div class="big-num">4,000字以上</div><p class="muted">図解2枚＋サムネイル付き</p></div>
+      <div class="card"><h3>人の作業</h3><div class="big-num">指示と確認</div><p class="muted">担当者1名</p></div>
+    </div>
+    <div class="split" style="margin-top:14px">
+      <div><img class="shot crop" src="img/cap-news.png" alt="記事一覧ページ" loading="lazy"><p class="cap">記事一覧ページ（<a href="https://h-s-e.jp/news/" target="_blank" rel="noopener">h-s-e.jp/news</a>）</p></div>
+      <div>
+    <div class="callout" style="margin-top:0">サイトのリニューアルと記事の公開から日が浅いため、検索流入などの成果はこれから計測していく段階です。本資料は、記事を継続的に制作・公開できる体制そのものの紹介としてご覧ください。</div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- 8 導入時に必要なもの -->
+  <section class="slide"><div class="in">
+    <h2><span class="n">8</span>他のサイトで運用する場合に必要なもの</h2>
+    <div class="grid g3">
+      <div class="card"><h3>記事を公開できるサイト</h3><p class="muted">サイトの作り（CMS・静的サイトなど）に合わせて、公開の手順を組み込みます。</p></div>
+      <div class="card"><h3>狙う分野と方針</h3><p class="muted">どの分野の検索語を狙うか、書いてよい内容・避ける内容を最初に決めます。</p></div>
+      <div class="card"><h3>確認担当者1名</h3><p class="muted">テーマの指示と、公開記事の最終チェックを行う方が1名いれば運用できます。</p></div>
+    </div>
+    <p class="muted" style="margin-top:14px">更新頻度（毎日・週数本など）や、公開前に担当者の確認を挟むかどうかは、サイトごとに設定できます。</p>
+  </div></section>
+
+</div>
+<div class="foot">株式会社HSE</div>
+</body>
+</html>
